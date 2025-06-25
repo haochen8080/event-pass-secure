@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +37,7 @@ const EventAttendance = () => {
         }
         
         // Track the usage
-        await track({ featureId: "ticket_pass", metadata: { eventId, eventLabel } });
+        await track({ featureId: "ticket_pass" });
         await refetch(); // Refresh customer data
         
         toast({
