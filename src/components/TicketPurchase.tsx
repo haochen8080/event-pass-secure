@@ -12,6 +12,22 @@ const TicketPurchase = () => {
   const hasActiveSubscription = customer?.products?.find(p => p.id === 'subscription_monthly');
   const hasSingleTicket = customer?.products?.find(p => p.id === 'single_ticket');
 
+  const handleSingleTicketPurchase = async () => {
+    console.log('Single ticket purchase clicked');
+    await attach({
+      productId: "single_ticket",
+      dialog: ProductChangeDialog,
+    });
+  };
+
+  const handleSubscriptionPurchase = async () => {
+    console.log('Subscription purchase clicked');
+    await attach({
+      productId: "subscription_monthly",
+      dialog: ProductChangeDialog,
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
       {/* Single Event Pass */}
@@ -27,13 +43,8 @@ const TicketPurchase = () => {
             <li>• Perfect for trying out our events</li>
           </ul>
           <Button
-            onClick={async () =>
-              await attach({
-                productId: "single_ticket",
-                dialog: ProductChangeDialog,
-              })
-            }
-            className="w-full bg-purple-600 hover:bg-purple-700"
+            onClick={handleSingleTicketPurchase}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
             disabled={!!hasSingleTicket}
           >
             {hasSingleTicket ? 'Already Purchased' : 'Buy Single Pass'}
@@ -54,13 +65,8 @@ const TicketPurchase = () => {
             <li>• Best value for regular attendees</li>
           </ul>
           <Button
-            onClick={async () =>
-              await attach({
-                productId: "subscription_monthly",
-                dialog: ProductChangeDialog,
-              })
-            }
-            className="w-full bg-purple-600 hover:bg-purple-700"
+            onClick={handleSubscriptionPurchase}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
             disabled={!!hasActiveSubscription}
           >
             {hasActiveSubscription ? 'Currently Subscribed' : 'Subscribe Monthly'}
