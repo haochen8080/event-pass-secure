@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { user, userProfile, logout } = useAuth();
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -33,7 +33,7 @@ const Header = () => {
                   : 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
               }`}
             >
-              Events
+              活动
             </Link>
             {user && (
               <Link
@@ -44,7 +44,7 @@ const Header = () => {
                     : 'text-gray-700 hover:text-purple-600 hover:bg-gray-50'
                 }`}
               >
-                My Tickets
+                我的门票
               </Link>
             )}
           </nav>
@@ -54,7 +54,9 @@ const Header = () => {
               <div className="flex items-center space-x-3">
                 <div className="flex items-center space-x-2">
                   <User className="h-5 w-5 text-gray-600" />
-                  <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {userProfile?.full_name || user.email}
+                  </span>
                 </div>
                 <Button
                   onClick={logout}
@@ -63,17 +65,17 @@ const Header = () => {
                   className="flex items-center space-x-1"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span>登出</span>
                 </Button>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
                 <Link to="/login">
-                  <Button variant="outline" size="sm">Login</Button>
+                  <Button variant="outline" size="sm">登录</Button>
                 </Link>
                 <Link to="/signup">
                   <Button size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-                    Sign Up
+                    注册
                   </Button>
                 </Link>
               </div>
