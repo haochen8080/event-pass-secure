@@ -12,6 +12,8 @@ const Events = () => {
   const { attach, check, track } = useAutumn();
   const { customer, refetch } = useCustomer();
 
+  console.log('Autumn Customer', customer);
+
   // Single event data
   const event = {
     id: '1',
@@ -34,6 +36,23 @@ const Events = () => {
   const hasMonthlySubscription = customer?.products?.find((p) => p.id === "subscription_monthly");
   const hasAccess = hasSinglePass || hasMonthlySubscription;
 
+  const handlePurchase = async (productId: string) => {
+    console.log('Attempting to purchase:', productId);
+    try {
+      await attach({
+        productId: productId,
+        dialog: ProductChangeDialog,
+      });
+    } catch (error) {
+      console.error('Purchase error:', error);
+      toast({
+        title: "Purchase failed",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleAttendEvent = async () => {
     if (!hasAccess) {
       toast({
@@ -44,19 +63,28 @@ const Events = () => {
       return;
     }
 
-    const { data } = await check({ featureId: "ticket_pass" });
-    
-    if (data?.allowed) {
-      await track({ featureId: "ticket_pass" });
-      await refetch();
+    try {
+      const { data } = await check({ featureId: "ticket_pass" });
+      
+      if (data?.allowed) {
+        await track({ featureId: "ticket_pass" });
+        await refetch();
+        toast({
+          title: "Event attendance confirmed!",
+          description: "You've successfully checked in to the event.",
+        });
+      } else {
+        toast({
+          title: "No tickets remaining",
+          description: "You've used all your available tickets.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Attendance error:', error);
       toast({
-        title: "Event attendance confirmed!",
-        description: "You've successfully checked in to the event.",
-      });
-    } else {
-      toast({
-        title: "No tickets remaining",
-        description: "You've used all your available tickets.",
+        title: "Error",
+        description: "Failed to process attendance. Please try again.",
         variant: "destructive"
       });
     }
@@ -107,10 +135,7 @@ const Events = () => {
                 </div>
               ) : (
                 <Button
-                  onClick={async () => await attach({
-                    productId: "single_ticket",
-                    dialog: ProductChangeDialog,
-                  })}
+                  onClick={() => handlePurchase("single_ticket")}
                   className="w-full"
                 >
                   Buy Single Pass
@@ -131,10 +156,7 @@ const Events = () => {
                 </div>
               ) : (
                 <Button
-                  onClick={async () => await attach({
-                    productId: "subscription_monthly",
-                    dialog: ProductChangeDialog,
-                  })}
+                  onClick={() => handlePurchase("subscription_monthly")}
                   className="w-full"
                   variant="outline"
                 >
