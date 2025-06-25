@@ -4,9 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
+import { useCustomer } from 'autumn-js/react';
 
 const Dashboard = () => {
   const { user, userProfile, userTickets } = useAuth();
+  const { customer } = useCustomer();
+
+  // Log the Autumn customer for verification
+  console.log("Autumn Customer", customer);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -37,6 +42,13 @@ const Dashboard = () => {
           <p className="text-gray-600">
             Here are your tickets and event information.
           </p>
+          {customer && (
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-800">
+                Autumn Integration Active - Customer ID: {customer.id}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}

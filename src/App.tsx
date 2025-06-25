@@ -5,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { AutumnProvider } from "autumn-js/react";
+import { supabase } from "@/integrations/supabase/client";
 import Events from "./pages/Events";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -20,14 +22,23 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Events />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AutumnProvider
+            backendUrl={`https://gufhkckyeislippjubob.supabase.co/functions/v1/autumn`}
+            includeCredentials={false}
+            getBearerToken={async () => {
+              const { data } = await supabase.auth.getSession();
+              return data.session?.access_token;
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Events />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AutumnProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
