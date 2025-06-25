@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Calendar, MapPin, Ticket, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +6,7 @@ import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard = () => {
-  const { user, userTickets } = useAuth();
+  const { user, userProfile, userTickets } = useAuth();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -33,7 +32,7 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.name}!
+            Welcome back, {userProfile?.full_name || user?.email}!
           </h1>
           <p className="text-gray-600">
             Here are your tickets and event information.
